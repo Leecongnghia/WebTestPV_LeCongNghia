@@ -1,0 +1,59 @@
+﻿@using System.Collections.Generic
+@model  IEnumerable<WebTestPV_LeCongNghia.Models.KhoaHoc>
+
+@{
+    ViewBag.Title = "Khóa Học WebTest";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-weight: bold;">Khóa học: <span id="selectedCourse">Chưa chọn</span></h1>
+            <hr style="border: none; height: 2px; background-color: green; box-shadow: 0 0 10px green, 0 0 20px green; transition: box-shadow 0.3s ease;"
+                onmouseover="this.style.boxShadow='0 0 20px green, 0 0 30px green';"
+                onmouseout="this.style.boxShadow='0 0 10px green, 0 0 20px green';" />
+            <div id="monHocContent">
+
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <h1 style="font-family: 'Times New Roman', Times, serif; font-weight: bold;">Khóa Học</h1>
+            <hr style="border: none; height: 2px; background-color: green; box-shadow: 0 0 10px green, 0 0 20px green; transition: box-shadow 0.3s ease;"
+                onmouseover="this.style.boxShadow='0 0 20px green, 0 0 30px green';"
+                onmouseout="this.style.boxShadow='0 0 10px green, 0 0 20px green';" />
+            <ul style="list-style: none; padding: 0; font-family: 'Times New Roman', Times, serif; font-weight: bold;">
+                @foreach (var khoaHocs in Model)
+                {
+                    <li>
+                        <a  href="#" onclick="loadMonHocs(@khoaHocs.ID, '@khoaHocs.TenKhoaHoc')"style="color: black;">@khoaHocs.TenKhoaHoc</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function loadMonHocs(khoaHocID, tenKhoaHoc) {
+        document.getElementById('selectedCourse').innerText = tenKhoaHoc;
+
+        $.ajax({
+            url: '@Url.Action("MonHocs", "KhoaHoc")',
+            type: 'GET',
+            data: { id: khoaHocID },
+            success: function (data) {
+                var content = '<ol>';
+                data.forEach(function (monHoc) {
+                    content += '<li>' + monHoc.TenMonHoc + '</li>';
+                });
+                content += '</ol>';
+                $('#monHocContent').html(content);
+            },
+            error: function () {
+                $('#monHocContent').html('<p>Không tìm thấy môn học.</p>');
+            }
+        });
+    }
+</script>
